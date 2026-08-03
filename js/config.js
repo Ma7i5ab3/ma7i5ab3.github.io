@@ -18,20 +18,20 @@ const CONFIG = {
      1. PROFILE — name, tagline, photo, browser tab title
      ------------------------------------------------------------------ */
   profile: {
-    name: "Marco Sabella",              // shown large in the Home section
+    name: "Mattia Sabella",              // shown large in the Home section
     shortName: "Sabella",               // shown small in the header
-    tagline: "PhD Candidate · Machine Learning Systems",
-    status: "Currently: Research Intern @ Example Lab, Berlin",
+    tagline: "PhD Student · Data Centric AI",
+    status: "Currently: Research Intern @ Politecnico di Milano",
 
     // Your photo. Drop the file in assets/img/ and put its name here.
     // Square images (e.g. 800x800) look best.
-    photo: "assets/img/profile.svg",
-    photoAlt: "Portrait of Marco Sabella",
+    photo: "assets/img/mattia_sabella_profile.svg",
+    photoAlt: "Portrait of Mattia Sabella",
     photoCaption: "Berlin, 2026",
 
     // Used for the browser tab and for search engines.
-    pageTitle: "Marco Sabella — Personal Page",
-    pageDescription: "Personal page of Marco Sabella: research, publications and industry experience."
+    pageTitle: "Mattia Sabella — Personal Page",
+    pageDescription: "Personal page of Mattia Sabella: research, publications and industry experience."
   },
 
   /* --------------------------------------------------------------------
