@@ -26,6 +26,7 @@
   --font-display: "Space Grotesk", system-ui, sans-serif;
   --font-body:    "IBM Plex Sans", system-ui, sans-serif;
   --font-mono:    "IBM Plex Mono", ui-monospace, monospace;
+  --font-retro:   "VT323", ui-monospace, monospace;   /* name, bio, research idea */
 
   /* Layout */
   --header-h:   64px;
@@ -107,34 +108,13 @@ img { max-width: 100%; display: block; }
 
 /* ---------- 3. TYPE ------------------------------------------------------ */
 
-/* Small uppercase mono label used above every section title. */
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-  margin: 0 0 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-/* The little line that trails off after the label. */
-.eyebrow::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--rule);
-}
-
 .section-title {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(1.9rem, 4.2vw, 2.8rem);
   letter-spacing: -0.025em;
   line-height: 1.1;
-  margin: 0 0 40px;
+  margin: 0 0 26px;
 }
 
 
@@ -198,6 +178,7 @@ img { max-width: 100%; display: block; }
   letter-spacing: 0.03em;
   color: var(--ink-soft);
   text-decoration: none;
+  white-space: nowrap;   /* overflow is caught by setupNavFit in main.js */
   border: 1px solid transparent;
   transition: color 0.2s, border-color 0.2s;
 }
@@ -260,12 +241,12 @@ img { max-width: 100%; display: block; }
 /* ---------- 5. SECTION SHELL --------------------------------------------- */
 
 .section {
-  padding-block: clamp(64px, 9vw, 112px);
+  padding-block: clamp(44px, 6vw, 72px);
   /* Stops the fixed header from covering a section when you jump to it. */
   scroll-margin-top: var(--header-h);
 }
 .section--wash { background: var(--wash); }
-.section--home { padding-top: calc(var(--header-h) + clamp(48px, 8vw, 88px)); }
+.section--home { padding-top: calc(var(--header-h) + clamp(32px, 5vw, 56px)); }
 
 
 /* ---------- 6. HOME ------------------------------------------------------ */
@@ -287,44 +268,43 @@ img { max-width: 100%; display: block; }
 }
 
 .home-name {
-  font-family: var(--font-display);
-  font-weight: 700;
   font-size: clamp(2.6rem, 7.5vw, 4.6rem);
-  letter-spacing: -0.035em;
   line-height: 0.98;
   margin: 0 0 20px;
 }
 
-.home-status {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--ink-soft);
-  border-left: 2px solid var(--ink);
-  padding-left: 14px;
-  margin: 0 0 32px;
+/* The places that keep the old terminal font: your name, the bio and the
+   research idea. VT323 draws small letters for its size, so it is scaled
+   up to match the rest; it has one weight only, and faked bold would
+   smear the pixel shapes. */
+.home-name,
+.bio-text p {
+  font-family: var(--font-retro);
+  font-size-adjust: 0.52;
+  font-synthesis: none;
+  font-variant-ligatures: none;   /* a real terminal has no "fi" ligature */
 }
 
-.home-bio p {
-  margin: 0 0 18px;
-  color: var(--ink-soft);
-  max-width: 62ch;
-}
-.home-bio p:first-child {
+.home-status {
+  font-family: var(--font-mono);
+  font-size: clamp(15px, 1.6vw, 17.5px);
+  font-weight: 500;
   color: var(--ink);
-  font-size: 1.12em;
+  border-left: 3px solid var(--ink);
+  padding: 4px 0 4px 16px;
+  margin: 0 0 26px;
 }
 
 .home-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 30px;
 }
 
 .home-facts {
   list-style: none;
-  margin: 36px 0 0;
-  padding: 22px 0 0;
+  margin: 24px 0 0;
+  padding: 16px 0 0;
   border-top: 1px solid var(--rule);
   display: grid;
   gap: 10px;
@@ -341,6 +321,83 @@ img { max-width: 100%; display: block; }
   flex-shrink: 0;
 }
 .home-facts .fact-value { color: var(--ink); }
+
+/* --- bio: numbered, full-width blocks -------------------------------------
+   Regular blocks sit side by side (one block fills the row); the highlighted
+   one spans the full width and is drawn inverted, with a blinking cursor. */
+
+.bio-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--bio-cols, 3), minmax(0, 1fr));   /* set in main.js */
+  gap: 14px;
+  margin-top: clamp(32px, 5vw, 48px);
+}
+
+.bio-block {
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  padding: 16px 18px 18px;
+  transition: border-color 0.25s var(--ease);
+}
+.bio-block:hover { border-color: var(--ink); }
+
+.bio-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.bio-num {
+  padding: 1px 6px;
+  background: var(--invert-bg);
+  color: var(--invert-fg);
+  letter-spacing: 0.04em;
+}
+
+/* Justified so each paragraph runs edge to edge; the gap between
+   paragraphs is only a little larger than the gap between lines. */
+.bio-text p {
+  margin: 0 0 0.7em;
+  font-size: 1.1rem;
+  line-height: 1.45;
+  text-align: justify;
+  hyphens: auto;
+  color: var(--ink-soft);
+}
+.bio-text p:last-child { margin-bottom: 0; }
+
+.bio-block--highlight {
+  grid-column: 1 / -1;
+  background: var(--invert-bg);
+  border-color: var(--invert-bg);
+  padding: 20px 24px 22px;
+}
+.bio-block--highlight .bio-label { color: var(--invert-fg); }
+.bio-block--highlight .bio-num {
+  background: var(--invert-fg);
+  color: var(--invert-bg);
+}
+.bio-block--highlight .bio-text p {
+  font-size: 1.22rem;
+  color: var(--invert-fg);
+}
+.bio-block--highlight .bio-text p:last-child::after {
+  content: "";
+  display: inline-block;
+  width: 0.5em;
+  height: 0.95em;
+  margin-left: 6px;
+  vertical-align: -0.12em;
+  background: currentColor;
+  animation: cursor-blink 1.1s steps(1) infinite;
+}
+@keyframes cursor-blink { 50% { opacity: 0; } }
 
 /* --- the portrait: this is the signature element ---------------------------
    At rest the photo is covered by a fine grid of dots that blend with it,
@@ -428,6 +485,17 @@ img { max-width: 100%; display: block; }
 .btn-arrow { transition: transform 0.22s var(--ease); }
 .btn:hover .btn-arrow { transform: translateX(3px); }
 
+/* Inline SVG icons (see ICONS in main.js); they take the text colour. */
+.icon { display: block; width: 1em; height: 1em; flex-shrink: 0; }
+
+/* Square, icon-only variant used for Email, LinkedIn, GitHub, Scholar. */
+.btn--icon {
+  width: 42px;
+  padding: 0;
+  justify-content: center;
+}
+.btn--icon .icon { width: 18px; height: 18px; }
+
 
 /* ---------- 8. PUBLICATIONS ---------------------------------------------- */
 
@@ -442,7 +510,7 @@ img { max-width: 100%; display: block; }
   display: grid;
   grid-template-columns: 96px 1fr;
   gap: 0 28px;
-  padding-block: 30px;
+  padding-block: 20px;
   border-bottom: 1px solid var(--rule);
   transition: background 0.3s var(--ease);
 }
@@ -459,9 +527,9 @@ img { max-width: 100%; display: block; }
   font-family: var(--font-display);
   font-weight: 600;
   font-size: clamp(1.08rem, 2.1vw, 1.32rem);
-  line-height: 1.3;
   letter-spacing: -0.012em;
-  margin: 0 0 10px;
+  line-height: 1.3;
+  margin: 0 0 6px;
 }
 
 .pub-authors {
@@ -478,26 +546,194 @@ img { max-width: 100%; display: block; }
   color: var(--ink-mute);
 }
 
-.pub-note {
+/* Small outlined label: publication notes, project tech, course tags. */
+.pub-note,
+.tag {
   display: inline-block;
-  margin-top: 10px;
-  padding: 3px 9px;
+  padding: 2px 8px;
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  white-space: nowrap;
   border: 1px solid var(--rule);
   color: var(--ink-mute);
 }
+.pub-note { margin-top: 8px; }
 
-.pub-links {
+/* Abstract: folded behind a small toggle so the list stays short. Once
+   open it sits in its own box, smaller than the title and set apart from
+   the venue by the rule on its left. */
+.pub-abstract { margin-top: 10px; }
+.pub-abstract summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 10px;
+  border: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  cursor: pointer;
+  list-style: none;
+  transition: color 0.2s, border-color 0.2s;
+}
+.pub-abstract summary::-webkit-details-marker { display: none; }
+.pub-abstract summary::before { content: "+"; width: 1ch; }
+.pub-abstract[open] summary::before { content: "\2212"; }   /* minus sign */
+.pub-abstract summary:hover { color: var(--ink); border-color: var(--ink); }
+
+.pub-abstract p {
+  margin: 10px 0 0;
+  padding: 12px 16px;
+  border-left: 2px solid var(--ink);
+  background: var(--paper);
+  font-size: 15px;
+  line-height: 1.5;
+  text-align: justify;
+  hyphens: auto;
+  color: var(--ink-soft);
+}
+
+.tags {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pub-links,
+.record-links,
+.project-links {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 18px;
+  margin-top: 12px;
 }
-/* Publication buttons are a touch smaller than the ones in Home. */
-.pub-links .btn { padding: 7px 13px; font-size: 12px; }
+/* These buttons are a touch smaller than the ones in Home. */
+.pub-links .btn,
+.record-links .btn,
+.project-links .btn { padding: 6px 12px; font-size: 12px; }
+
+
+/* ---------- 8b. PROJECTS ------------------------------------------------- */
+
+.project-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));   /* cards stretch to fill the row */
+  gap: 14px;
+}
+
+.project {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px 20px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+}
+.project:hover { border-color: var(--ink); transform: translateY(-2px); }
+
+.project-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: -0.012em;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.project-desc {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* Project logo: centred between title and description. Like the other
+   logos it is grey at rest and takes its colour when the card is hovered. */
+.project-logo {
+  align-self: center;
+  height: 64px;
+  width: auto;
+  max-width: 85%;
+  object-fit: contain;
+  margin-block: 6px;
+  filter: grayscale(1);
+  opacity: 0.8;
+  transition: filter 0.3s var(--ease), opacity 0.3s var(--ease);
+}
+.project:hover .project-logo { filter: none; opacity: 1; }
+
+/* Pushes the Code button to the bottom so buttons line up across cards. */
+.project-links { margin-top: auto; padding-top: 4px; }
+
+
+/* ---------- 8c. TEACHING ------------------------------------------------- */
+/* One compact row per course: period, course + details, tags on the right. */
+
+.teach-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.teach {
+  display: grid;
+  grid-template-columns: 150px 1fr auto;
+  gap: 0 24px;
+  align-items: start;
+  padding-block: 14px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.teach-period {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--ink-mute);
+  padding-top: 3px;
+}
+
+.teach-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 14px;
+}
+
+.teach-course {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.08rem;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.teach-org {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+
+.teach-points {
+  margin: 4px 0 0;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--ink-mute);
+  max-width: 80ch;
+}
+
+.teach .tags { justify-content: flex-end; padding-top: 2px; }
+.teach .tag { text-transform: none; }   /* keeps "MSc" and "20 h" as written */
 
 
 /* ---------- 9. EXPERIENCE & EDUCATION ------------------------------------ */
@@ -513,9 +749,9 @@ img { max-width: 100%; display: block; }
 
 .record {
   display: grid;
-  grid-template-columns: 180px 1fr;
+  grid-template-columns: 180px 1fr auto;   /* period · details · logo */
   gap: 0 28px;
-  padding-block: 32px;
+  padding-block: 20px;
   border-bottom: 1px solid var(--rule);
 }
 
@@ -535,7 +771,7 @@ img { max-width: 100%; display: block; }
 }
 
 .record-org {
-  margin: 0 0 14px;
+  margin: 0 0 8px;
   font-family: var(--font-mono);
   font-size: 13px;
   color: var(--ink-soft);
@@ -546,7 +782,14 @@ img { max-width: 100%; display: block; }
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 8px;
+  gap: 12px;
+}
+/* A point that starts with a <strong> title: title on its own line. */
+.record-points strong {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--ink);
+  font-weight: 500;
 }
 .record-points li {
   position: relative;
@@ -566,6 +809,23 @@ img { max-width: 100%; display: block; }
   background: var(--ink);
 }
 
+/* Organisation logo: grey like the portrait, in colour on hover. */
+.org-logo {
+  height: 30px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.75;
+  transition: filter 0.3s var(--ease), opacity 0.3s var(--ease);
+}
+.record:hover .org-logo { filter: none; opacity: 1; }
+/* The logos are dark ink, so in the dark theme they are flipped to light. */
+[data-theme="dark"] .org-logo,
+[data-theme="dark"] .record:hover .org-logo,
+[data-theme="dark"] .project-logo,
+[data-theme="dark"] .project:hover .project-logo { filter: grayscale(1) invert(1); }
+
 .record-detail {
   margin: 0;
   color: var(--ink-soft);
@@ -580,7 +840,7 @@ img { max-width: 100%; display: block; }
   font-size: 1.15rem;
   color: var(--ink-soft);
   max-width: 56ch;
-  margin: 0 0 36px;
+  margin: 0 0 24px;
 }
 
 .contact-list {
@@ -595,7 +855,7 @@ img { max-width: 100%; display: block; }
   align-items: baseline;
   justify-content: space-between;
   gap: 20px;
-  padding: 20px 4px;
+  padding: 14px 4px;
   border-bottom: 1px solid var(--rule);
   text-decoration: none;
   transition: padding-left 0.28s var(--ease), background 0.28s var(--ease);
@@ -605,7 +865,11 @@ img { max-width: 100%; display: block; }
   background: color-mix(in srgb, var(--ink) 4%, transparent);
 }
 
+.contact-label .icon { width: 16px; height: 16px; color: var(--ink); }
 .contact-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.14em;
@@ -668,48 +932,61 @@ img { max-width: 100%; display: block; }
   .home-grid { grid-template-columns: 1fr; }
   /* Photo above the text on narrow screens. */
   .home-portrait { order: -1; max-width: 260px; }
-  .record { grid-template-columns: 150px 1fr; }
+  .record { grid-template-columns: 150px 1fr auto; }
+  .bio-grid { grid-template-columns: 1fr; }
 }
+
+/* Compact header: main.js adds .is-compact to the header whenever the links
+   do not fit on one line, and they collapse into the menu button. */
+.header.is-compact .menu-btn { display: inline-flex; }
+
+/* Nav becomes a panel that drops down under the header. */
+.header.is-compact .nav-list {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  right: 0;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  padding: 8px 16px 16px;
+  transform: translateY(-8px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease), visibility 0.25s;
+}
+.header.is-compact .nav-list.is-open {
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+}
+.header.is-compact .nav-link {
+  padding: 13px 4px;
+  font-size: 14px;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+}
+.header.is-compact .nav-link.is-active { border-color: var(--rule); }
+.header.is-measuring .nav-list { transition: none; }   /* see setupNavFit */
 
 @media (max-width: 720px) {
   body { font-size: 16px; }
 
-  .menu-btn { display: inline-flex; }
-
-  /* Nav becomes a panel that drops down under the header. */
-  .nav-list {
-    position: fixed;
-    top: var(--header-h);
-    left: 0;
-    right: 0;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
-    background: var(--paper);
-    border-bottom: 1px solid var(--rule);
-    padding: 8px 16px 16px;
-    transform: translateY(-8px);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.25s var(--ease), transform 0.25s var(--ease), visibility 0.25s;
-  }
-  .nav-list.is-open {
-    transform: none;
-    opacity: 1;
-    visibility: visible;
-  }
-  .nav-link {
-    padding: 13px 4px;
-    font-size: 14px;
-    border: 0;
-    border-bottom: 1px solid var(--rule);
-  }
-  .nav-link.is-active { border-color: var(--rule); }
-
   .pub,
-  .record { grid-template-columns: 1fr; gap: 8px; }
+  .record,
+  .teach { grid-template-columns: 1fr; gap: 6px; }
   .pub-year,
-  .record-period { padding-top: 0; }
+  .record-period,
+  .teach-period { padding-top: 0; }
+  .org-logo { order: -1; margin-bottom: 4px; }   /* logo on top on phones */
+  .teach .tags { justify-content: flex-start; }
+
+  .bio-block--highlight .bio-text p { font-size: 1.12rem; }
+  /* Lines are too short here for justified text: it opens wide gaps. */
+  .bio-text p,
+  .pub-abstract p { text-align: left; }
 
   .contact-row { flex-direction: column; align-items: flex-start; gap: 6px; }
   .contact-value { text-align: left; }
@@ -728,10 +1005,12 @@ img { max-width: 100%; display: block; }
   .reveal { opacity: 1; transform: none; }
   /* Show the portrait clean rather than relying on a hover animation. */
   .portrait::after { opacity: 0; }
+  /* A near-zero duration would make the cursor flicker; keep it still. */
+  .bio-block--highlight .bio-text p:last-child::after { animation: none !important; }
 }
 
 @media print {
-  .header, .footer-top, .home-actions, .pub-links { display: none; }
+  .header, .footer-top, .home-actions, .pub-links, .record-links, .project-links { display: none; }
   .reveal { opacity: 1; transform: none; }
   .section { padding-block: 24px; }
 }
