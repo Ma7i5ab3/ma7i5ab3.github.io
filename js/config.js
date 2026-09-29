@@ -85,7 +85,7 @@ const CONFIG = {
       { label: "LinkedIn", url: "https://www.linkedin.com/in/mattia-sabella",  icon: "linkedin" },
       { label: "GitHub",   url: "https://github.com/Ma7i5ab3",                 icon: "github" },
       { label: "Scholar",  url: "https://scholar.google.com/citations?user=EFL_FeoAAAAJ&hl=it&oi=ao", icon: "scholar" },
-      { label: "CV",       url: "assets/pdf/cv.pdf" }
+      { label: "CV",       url: "assets/cv/CV - 3.0.pdf" }
     ],
 
     // Optional quick facts shown as a small list. Set to [] to hide.
