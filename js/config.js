@@ -117,6 +117,16 @@ const CONFIG = {
   publications: [
     {
       year: "2026",
+      title: "Tabular Foundation Models: A Systematic Survey",
+      authors: "A. Archetti, M. Mastroleo, M. Sabella, C. Cappiello, M. Matteucci",
+      abstract: "Tabular data is among the most common modalities in applied machine learning, yet tabular prediction has long lacked pretrained models: for two decades, gradient-boosted decision trees, trained from scratch on each new dataset, have remained unmatched. Tabular foundation models are beginning to change this. A single network, pretrained once on a broad distribution of datasets, adapts to an unseen dataset with little dataset-specific effort, most often by predicting in one forward pass with the labeled rows as context. Existing surveys of tabular learning predate most of this fast-growing research or cover only part of it. We present a systematic survey: a PRISMA-guided pipeline screens 1,133 candidate records with two language models and human adjudication, yielding a corpus of 146 works. We arrange the corpus along two axes: the pretraining data source, synthetic priors or real tables, and the transfer mechanism, from in-context learning to fine-tuning, text generation, and weight generation. We describe 42 core models, group the 104 works that extend them into six threads, and review the benchmarks, including living leaderboards. Outside the corpus, we map the tasks these models reach beyond classification and regression. Synthetic-prior methods, popularized by TabPFN, dominate the field and have reached industrial scale, with company releases leading the live benchmarks. Open challenges include converting larger contexts into accuracy, combining numerical and semantic understanding, grounding prior and architecture design in theory, evaluating capabilities that no public benchmark covers, and keeping frontier models open to independent assessment as access to their weights and documentation narrows.",
+      links: [
+        { label: "PrePrint", url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7531718" },
+        { label: "doi", url: "https://dx.doi.org/10.2139/ssrn.7531718"}
+      ]
+    },
+    {
+      year: "2026",
       title: "Safety-Aware Aggregation for Federated Fine-Tuning of LLMs",
       authors: "M. Sabella, L. Lei, C. Cappiello",
       venue: "3rd International Workshop on AI-for-Good: AI for a Better Society (AI4Good 2026) @ International Conference on Web Information Systems Engineering (WISE 2026)",
